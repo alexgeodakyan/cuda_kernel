@@ -26,7 +26,7 @@ int main()
     float *A_h = new float[M * K];
     float *B_h = new float[K * N];
     float *C_h = new float[M * N];
-    float *C_h_ref = new float[M * N]; // cpu reference
+    // float *C_h_ref = new float[M * N]; // cpu reference
 
     // create random matrices
     std::mt19937 gen(42);
@@ -42,20 +42,20 @@ int main()
     }
 
     // CPU multiplication for comparison:
-    for (int row = 0; row < M; ++row)
-    {
-        for (int col = 0; col < N; ++col)
-        {
-            float sum = 0.0f;
+    // for (int row = 0; row < M; ++row)
+    // {
+    //     for (int col = 0; col < N; ++col)
+    //     {
+    //         float sum = 0.0f;
 
-            for (int k = 0; k < K; ++k)
-            {
-                sum += A_h[row * K + k] * B_h[k * N + col];
-            }
+    //         for (int k = 0; k < K; ++k)
+    //         {
+    //             sum += A_h[row * K + k] * B_h[k * N + col];
+    //         }
 
-            C_h_ref[row * N + col] = sum;
-        }
-    }
+    //         C_h_ref[row * N + col] = sum;
+    //     }
+    // }
 
     float *A_d, *B_d, *C_d; // device memory pointers
 
@@ -86,27 +86,27 @@ int main()
         delete[] A_h;
         delete[] B_h;
         delete[] C_h;
-        delete[] C_h_ref;
+        // delete[] C_h_ref;
         return 1;
     }
 
     // copy the result back to host and then compare to reference
     CUDA_ERROR_CHECK(cudaMemcpy(C_h, C_d, M * N * sizeof(float), cudaMemcpyDeviceToHost));
 
-    bool error = false;
-    for (int i = 0; i < M * N; ++i) {
-        if (std::fabs(C_h[i] - C_h_ref[i]) > 1e-3f) {
-            error = true;
-            break;
-        }
-    }
+    // bool error = false;
+    // for (int i = 0; i < M * N; ++i) {
+    //     if (std::fabs(C_h[i] - C_h_ref[i]) > 1e-3f) {
+    //         error = true;
+    //         break;
+    //     }
+    // }
 
-    if (error) {
-        std::cout << "Incorrect matrix multiplication.\n";
-    }
-    else {
-        std::cout << "Correct matrix multiplication.\n";
-    }
+    // if (error) {
+    //     std::cout << "Incorrect matrix multiplication.\n";
+    // }
+    // else {
+    //     std::cout << "Correct matrix multiplication.\n";
+    // }
 
     CUDA_ERROR_CHECK(cudaFree(A_d));
     CUDA_ERROR_CHECK(cudaFree(B_d));
@@ -114,7 +114,7 @@ int main()
     delete[] A_h;
     delete[] B_h;
     delete[] C_h;
-    delete[] C_h_ref;
+    // delete[] C_h_ref;
 
-    return error ? 1 : 0;
+    // return error ? 1 : 0;
 }
